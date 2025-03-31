@@ -184,6 +184,18 @@
             padding: 5px 10px;
             font-size: 12px;
         }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
     </style>
 </head>
 
@@ -199,9 +211,14 @@
             </ul>
         </nav>
         <div class="user-links">
-            <!-- Logowanie i rejestracja -->
-            <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Zaloguj się</a>
-            <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Zarejestruj się</a>
+            {% if app.user %}
+                <!-- Jeśli użytkownik jest zalogowany -->
+                <a href="{{ path('app_logout') }}" class="btn btn-primary">Wyloguj się</a>
+            {% else %}
+                <!-- Jeśli użytkownik nie jest zalogowany -->
+                <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal">Zaloguj się</a>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal">Zarejestruj się</a>
+            {% endif %}
             <!-- Koszyk -->
             <a href="#" class="btn-cart">
                 Koszyk
@@ -241,7 +258,6 @@
         </div>
     </section>
 </main>
-
 <!-- Modal Logowania -->
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -251,15 +267,21 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
+                {% if error %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
+
+                <form action="{{ path('app_login') }}" method="post">
                     <div class="mb-3">
                         <label for="email" class="form-label">Adres e-mail</label>
-                        <input type="email" class="form-control" id="email" placeholder="Wprowadź e-mail">
+                        <input type="email" name="email" class="form-control" id="email"
+                               value="{{ last_username|default('') }}" required autofocus>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Hasło</label>
-                        <input type="password" class="form-control" id="password" placeholder="Wprowadź hasło">
+                        <input type="password" name="password" class="form-control" id="password" required>
                     </div>
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
                     <button type="submit" class="btn btn-primary w-100">Zaloguj się</button>
                 </form>
             </div>
@@ -280,19 +302,16 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Imię i nazwisko</label>
-                        <input type="text" class="form-control" id="name" placeholder="Wprowadź swoje imię">
-                    </div>
+                <form action="{{ path('app_register') }}" method="post">
                     <div class="mb-3">
                         <label for="email" class="form-label">Adres e-mail</label>
-                        <input type="email" class="form-control" id="email" placeholder="Wprowadź e-mail">
+                        <input type="email" name="email" class="form-control" id="email" required>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Hasło</label>
-                        <input type="password" class="form-control" id="password" placeholder="Wprowadź hasło">
+                        <input type="password" name="password" class="form-control" id="password" required>
                     </div>
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('registration') }}">
                     <button type="submit" class="btn btn-primary w-100">Zarejestruj się</button>
                 </form>
             </div>

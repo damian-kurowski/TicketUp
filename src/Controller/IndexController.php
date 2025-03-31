@@ -13,6 +13,8 @@ class IndexController extends AbstractController
     {
         return $this->render('index.html.twig', [
             'message' => 'ticketup',
+            'last_username' => '', // Wymagane dla formularza logowania
+            'error' => null // Wymagane dla komunikatów błędów
         ]);
     }
 }
