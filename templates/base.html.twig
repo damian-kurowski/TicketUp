@@ -1,17 +1,96 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}TicketUp{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🎟️</text></svg>">
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-ticketup mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="{{ path('app_homepage') }}">🎟️ TicketUp</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link {% if app.request.attributes.get('_route') == 'app_homepage' %}active{% endif %}" aria-current="page" href="{{ path('app_homepage') }}">Wydarzenia</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if app.request.attributes.get('_route') == 'app_cart_show' %}active{% endif %}" href="{{ path('app_cart_show') }}">
+                            <i class="bi bi-cart"></i> Koszyk
+                            <turbo-frame id="navbar-cart-count">
+                                <span class="badge rounded-pill bg-light text-primary">{{ cartItemCount }}</span>
+                            </turbo-frame>
+                        </a>
+                    </li>
+                    {% if app.user %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUser" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Witaj, {{ app.user.firstName ?? app.user.userIdentifier }}
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownUser">
+                                <li>
+                                    <a class="dropdown-item" href="{{ path('app_profile_index') }}">
+                                        <i class="bi bi-person-circle me-2"></i> Mój profil
+                                    </a>
+                                </li>                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ path('app_logout') }}">Wyloguj</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if app.request.attributes.get('_route') == 'app_login' %}active{% endif %}" href="{{ path('app_login') }}">Logowanie</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if app.request.attributes.get('_route') == 'app_register' %}active{% endif %}" href="{{ path('app_register') }}">Rejestracja</a>
+                        </li>
+                    {% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownAdmin" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Admin Panel
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownAdmin">
+                                <li>
+                                    <a class="dropdown-item" href="{{ path('app_admin_event_index') }}">
+                                        <i class="bi bi-calendar-event me-2"></i> Zarządzaj Wydarzeniami
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ path('app_admin_order_index') }}">
+                                        <i class="bi bi-receipt me-2"></i> Zarządzaj Zamówieniami
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+<main class="container my-4">
+    {{ include('partials/_flash_messages.html.twig') }}
+
+    {% block body %}{% endblock %}
+</main>
+
+<footer class="mt-auto py-3 bg-light text-center">
+    <div class="container">
+        <span class="text-muted">TicketUp &copy; {{ "now"|date("Y") }} - Projekt Studencki</span>
+    </div>
+</footer>
+
+{% block javascripts %}
+    {{ encore_entry_script_tags('app') }}
+{% endblock %}
+</body>
 </html>

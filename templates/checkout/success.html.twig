@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Zamówienie Zakończone Pomyślnie - TicketUp{% endblock %}
+
+{% block body %}
+    <div class="container text-center py-5">
+        <div class="alert alert-success" role="alert">
+            <i class="bi bi-check-circle-fill display-1 text-success"></i>
+            <h1 class="alert-heading mt-3">Dziękujemy!</h1>
+            <p class="lead">Twoje zamówienie o numerze <strong>#{{ order.id }}</strong> zostało pomyślnie opłacone (symulacja).</p>
+            <hr>
+            <p class="mb-0">Rozpoczęliśmy przetwarzanie Twojego zamówienia. Wkrótce powinieneś otrzymać wiadomość e-mail z biletami na adres: <strong>{{ order.customerEmail }}</strong>.</p>
+            <p><small>(W tym projekcie sprawdź Symfony Profiler lub lokalny Mail Catcher, gdy zaimplementujemy wysyłkę).</small></p>
+        </div>
+
+        <div class="mt-4">
+            <a href="{{ path('app_homepage') }}" class="btn btn-primary btn-lg"><i class="bi bi-house"></i> Wróć na stronę główną</a>
+        </div>
+    </div>
+{% endblock %}

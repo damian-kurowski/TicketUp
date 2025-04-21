@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mój Profil - TicketUp{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">Mój Profil</h1>
+
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header">
+            Twoje Dane
+        </div>
+        <div class="card-body">
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Imię:</strong> {{ user.firstName|default('---') }}</p>
+            <p><strong>Nazwisko:</strong> {{ user.lastName|default('---') }}</p>
+        </div>
+    </div>
+
+    <h2 class="mb-3">Historia Twoich Zamówień</h2>
+
+    {% if orders is not empty %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Numer Zamówienia</th>
+                    <th>Data Złożenia</th>
+                    <th>Status</th>
+                    <th class="text-end">Kwota Całkowita</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td>#{{ order.id }}</td>
+                        <td class="text-nowrap">{{ order.createdAt|date('Y-m-d H:i') }}</td>
+                        <td>
+                            {% set status_badge = 'secondary' %}
+                            {% if order.status == 'paid' %}{% set status_badge = 'success' %}{% endif %}
+                            {% if order.status == 'new' %}{% set status_badge = 'warning text-dark' %}{% endif %}
+                            {% if order.status == 'cancelled' %}{% set status_badge = 'danger' %}{% endif %}
+                            <span class="badge bg-{{ status_badge }}">{{ order.status|capitalize }}</span>
+                        </td>
+                        <td class="text-end text-nowrap">{{ order.totalAmount|number_format(2, ',', ' ') }} zł</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">Nie złożyłeś/aś jeszcze żadnych zamówień.</div>
+    {% endif %}
+
+{% endblock %}

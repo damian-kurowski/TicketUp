@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dodaj Typ Biletu dla: {{ event.name }} - Admin{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">Dodaj Typ Biletu dla Wydarzenia: <a href="{{ path('app_admin_event_show', {'id': event.id}) }}">{{ event.name }}</a></h1>
+
+    {{ include('admin/ticket_type/_form.html.twig') }}
+
+    <div class="mt-3">
+        <a href="{{ path('app_admin_ticket_type_index', {'event_id': event.id}) }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Wróć do listy typów biletów
+        </a>
+    </div>
+{% endblock %}

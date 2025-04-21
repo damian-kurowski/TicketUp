@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Zamówienia - Admin Panel{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">Lista Zamówień</h1>
+
+    {% if orders is not empty %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Klient</th>
+                    <th>Status</th>
+                    <th class="text-end">Kwota</th>
+                    <th>Data Złożenia</th>
+                    <th class="text-end">Akcje</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <td>#{{ order.id }}</td>
+                        <td>
+                            {{ order.customerFirstName }} {{ order.customerLastName }}<br>
+                            <small class="text-muted">{{ order.customerEmail }}</small>
+                            {% if order.user %}<span class="badge bg-secondary ms-1" title="Zarejestrowany użytkownik">U</span>{% endif %}
+                        </td>
+                        <td>
+                            {% set status_badge = 'secondary' %}
+                            {% if order.status == 'paid' %}{% set status_badge = 'success' %}{% endif %}
+                            {% if order.status == 'new' %}{% set status_badge = 'warning text-dark' %}{% endif %}
+                            {% if order.status == 'cancelled' %}{% set status_badge = 'danger' %}{% endif %}
+                            <span class="badge bg-{{ status_badge }}">{{ order.status|capitalize }}</span>
+                        </td>
+                        <td class="text-end text-nowrap">{{ order.totalAmount|number_format(2, ',', ' ') }} zł</td>
+                        <td class="text-nowrap">{{ order.createdAt ? order.createdAt|date('Y-m-d H:i') : '' }}</td>
+                        <td class="text-end">
+                            <a href="{{ path('app_admin_order_show', {'id': order.id}) }}" class="btn btn-sm btn-info" title="Pokaż szczegóły">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center">Brak zamówień do wyświetlenia.</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">Brak zamówień do wyświetlenia.</div>
+    {% endif %}
+
+{% endblock %}

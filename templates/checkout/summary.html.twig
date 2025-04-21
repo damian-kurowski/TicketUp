@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Kasa - Podsumowanie i Płatność - TicketUp{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">Kasa - Podsumowanie Zamówienia</h1>
+    <p>Twoje zamówienie zostało przyjęte. Sprawdź poniższe dane i zasymuluj płatność, aby otrzymać bilety.</p>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-header">
+            <h2>Zamówienie #{{ order.id }}</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Status:</strong> <span class="badge bg-warning text-dark">{{ order.status|capitalize }}</span></p>
+                    <p><strong>Email:</strong> {{ order.customerEmail }}</p>
+                    <p><strong>Imię i Nazwisko:</strong> {{ order.customerFirstName }} {{ order.customerLastName }}</p>
+                    <p><strong>Data zamówienia:</strong> {{ order.createdAt|date('d.m.Y H:i:s') }}</p>
+                </div>
+                <div class="col-md-6">
+                    <h4 class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-primary">Zamówione Bilety</span>
+                    </h4>
+                    <ul class="list-group mb-3">
+                        {% for item in order.orderItems %}
+                            {% set tt = item.ticketType %}
+                            {% set event = tt.event %}
+                            <li class="list-group-item d-flex justify-content-between lh-sm">
+                                <div>
+                                    <h6 class="my-0">{{ event.name }} - {{ tt.name }}</h6>
+                                    <small class="text-muted">Ilość: {{ item.quantity }} x {{ item.unitPrice|number_format(2, ',', ' ') }} zł</small>
+                                </div>
+                                <span class="text-muted text-nowrap">{{ item.totalPrice|number_format(2, ',', ' ') }} zł</span>
+                            </li>
+                        {% endfor %}
+                        <li class="list-group-item d-flex justify-content-between bg-light">
+                            <span class="fw-bold fs-5">Suma (PLN)</span>
+                            <strong class="text-nowrap fs-5">{{ order.totalAmount|number_format(2, ',', ' ') }} zł</strong>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="mt-4 p-4 border rounded bg-light text-center">
+        <h3>Symulacja Płatności</h3>
+        <p>W normalnej aplikacji tutaj nastąpiłoby przekierowanie do bramki płatności. W tym projekcie kliknij poniższy przycisk, aby zasymulować pomyślną płatność.</p>
+        <form action="{{ path('app_checkout_simulate_payment', {'id': order.id}) }}" method="post">
+            <input type="hidden" name="_token" value="{{ csrf_token('simulate_payment' ~ order.id) }}">
+            <button type="submit" class="btn btn-success btn-lg"> {# Zielony przycisk #}
+                <i class="bi bi-credit-card"></i> ZASYMULUJ POMYŚLNĄ PŁATNOŚĆ
+            </button>
+        </form>
+    </div>
+    <div class="text-center mt-3">
+        <a href="{{ path('app_homepage') }}" class="btn btn-sm btn-outline-danger">Anuluj zamówienie</a>
+    </div>
+
+{% endblock %}

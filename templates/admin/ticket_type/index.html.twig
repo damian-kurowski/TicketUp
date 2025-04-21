@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Typy Biletów dla: {{ event.name }} - Admin{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">Typy Biletów dla Wydarzenia: <a href="{{ path('app_admin_event_show', {'id': event.id}) }}">{{ event.name }}</a></h1>
+
+    <div class="mb-3">
+        <a href="{{ path('app_admin_ticket_type_new', {'event_id': event.id}) }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Dodaj nowy typ biletu</a>
+        <a href="{{ path('app_admin_event_show', {'id': event.id}) }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Wróć do wydarzenia</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nazwa</th>
+                <th>Cena</th>
+                <th>Ilość Początkowa</th>
+                <th>Ilość Dostępna</th>
+                <th class="text-end">Akcje</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for ticket_type in ticket_types %}
+                <tr>
+                    <td>{{ ticket_type.id }}</td>
+                    <td>{{ ticket_type.name }}</td>
+                    <td>{{ ticket_type.price|number_format(2, ',', ' ') }} zł</td>
+                    <td>{{ ticket_type.quantity }}</td>
+                    <td>{{ ticket_type.availableQuantity }}</td>
+                    <td class="text-end text-nowrap">
+                        <a href="{{ path('app_admin_ticket_type_edit', {'event_id': event.id, 'id': ticket_type.id}) }}" class="btn btn-sm btn-warning" title="Edytuj"><i class="bi bi-pencil"></i></a>
+                        {{ include('admin/ticket_type/_delete_form.html.twig', {'tt': ticket_type, 'event': event}) }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6" class="text-center">Brak zdefiniowanych typów biletów.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

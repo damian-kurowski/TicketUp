@@ -1,0 +1,6 @@
+{# templates/admin/event/_delete_form.html.twig #}
+{# Upewnij się, że przekazujesz zmienną 'event' do tego szablonu przy include #}
+<form method="post" action="{{ path('app_admin_event_delete', {'id': event.id}) }}" onsubmit="return confirm('Czy na pewno chcesz usunąć to wydarzenie?');" class="d-inline-block"> {# d-inline-block, aby był obok innych przycisków #}
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
+    <button class="btn btn-sm btn-danger" title="Usuń"><i class="bi bi-trash"></i></button> {# Czerwony przycisk + ikona #}
+</form>

@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edytuj Wydarzenie - Admin{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">Edytuj Wydarzenie: {{ event.name }}</h1>
+
+    {{ include('admin/event/_form.html.twig', {'button_label': 'Zapisz zmiany'}) }}
+
+    <div class="mt-4 d-flex justify-content-between">
+        <a href="{{ path('app_admin_event_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Wróć do listy
+        </a>
+    </div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% set tt = item.ticketType %}
+{% set event = tt.event %}
+<tr id="cart-item-{{ tt.id }}">
+    <td>...</td>
+    <td>{{ tt.name }}</td>
+    <td class="text-end text-nowrap">{{ tt.price|number_format(2, ',', ' ') }} zł</td>
+    <td class="text-center">
+        <div class="d-flex justify-content-center align-items-center">
+            <form action="{{ path('app_cart_decrease', {'id': tt.id}) }}" method="post" class="d-inline"> <input type="hidden" name="_token" value="{{ csrf_token('decrease_item' ~ tt.id) }}"> <button type="submit" class="btn btn-sm btn-outline-secondary" title="Zmniejsz ilość">-</button> </form>
+            <span class="mx-2 fw-bold">{{ item.quantity }}</span>
+            <form action="{{ path('app_cart_add') }}" method="post" class="d-inline"> <input type="hidden" name="_token" value="{{ csrf_token('add_to_cart_token') }}"> <input type="hidden" name="quantity[{{ tt.id }}]" value="1"> <button type="submit" class="btn btn-sm btn-outline-secondary" title="Zwiększ ilość">+</button> </form>
+        </div>
+        <small class="text-muted d-block">max {{ tt.availableQuantity }}</small>
+    </td>
+    <td class="text-end text-nowrap fw-bold">{{ item.subtotal|number_format(2, ',', ' ') }} zł</td>
+    <td class="text-center">
+        <form action="{{ path('app_cart_remove', {'id': tt.id}) }}" method="post" class="d-inline"> <input type="hidden" name="_token" value="{{ csrf_token('remove_item' ~ tt.id) }}"> <button type="submit" class="btn btn-sm btn-outline-danger" title="Usuń całkowicie"> <i class="bi bi-trash"></i> </button> </form>
+    </td>
+</tr>

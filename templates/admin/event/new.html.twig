@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dodaj Nowe Wydarzenie - Admin{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">Dodaj Nowe Wydarzenie</h1>
+
+    {{ include('admin/event/_form.html.twig') }}
+
+    <div class="mt-3">
+        <a href="{{ path('app_admin_event_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Wróć do listy
+        </a>
+    </div>
+{% endblock %}

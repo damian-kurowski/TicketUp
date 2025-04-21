@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Szczegóły Wydarzenia: {{ event.name }} - Admin{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">Szczegóły Wydarzenia: {{ event.name }}</h1>
+
+    <div class="table-responsive mb-4">
+        <table class="table table-bordered">
+            <tbody>
+            <tr>
+                <th style="width: 20%;">Id</th>
+                <td>{{ event.id }}</td>
+            </tr>
+            <tr>
+                <th>Nazwa</th>
+                <td>{{ event.name }}</td>
+            </tr>
+            <tr>
+                <th>Opis</th>
+                <td>{{ event.description|nl2br }}</td>
+            </tr>
+            <tr>
+                <th>Data rozpoczęcia</th>
+                <td>{{ event.startDate ? event.startDate|date('Y-m-d H:i') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Data zakończenia</th>
+                <td>{{ event.endDate ? event.endDate|date('Y-m-d H:i') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Nazwa miejsca</th>
+                <td>{{ event.locationName }}</td>
+            </tr>
+            <tr>
+                <th>Adres miejsca</th>
+                <td>{{ event.locationAddress|default('---') }}</td>
+            </tr>
+            <tr>
+                <th>Obrazek</th>
+                <td>
+                    {% if event.imageFilename %}
+                        <a href="{{ asset('uploads/events/' ~ event.imageFilename) }}" target="_blank" title="Otwórz obrazek w nowej karcie">
+                            <img src="{{ asset('uploads/events/' ~ event.imageFilename) }}" alt="Obrazek dla {{ event.name }}" class="img-thumbnail img-fluid" style="max-height: 150px;">
+                        </a>
+                    {% else %}
+                        <span class="text-muted">Brak obrazka</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Utworzono</th>
+                <td>{{ event.createdAt ? event.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <hr class="my-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Typy Biletów dla Tego Wydarzenia</h2>
+        <a href="{{ path('app_admin_ticket_type_new', {'event_id': event.id}) }}" class="btn btn-success">
+            <i class="bi bi-plus-lg"></i> Dodaj Typ Biletu
+        </a>
+    </div>
+    {% set ticketTypes = event.ticketTypes %}
+    {% if ticketTypes is not empty %}
+        <div class="table-responsive mb-4">
+            <table class="table table-sm table-hover align-middle">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nazwa</th>
+                    <th class="text-end">Cena</th>
+                    <th class="text-center">Ilość Początkowa</th>
+                    <th class="text-center">Ilość Dostępna</th>
+                    <th class="text-end">Akcje</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for tt in ticketTypes %}
+                    <tr>
+                        <td>{{ tt.id }}</td>
+                        <td>{{ tt.name }}</td>
+                        <td class="text-end text-nowrap">{{ tt.price|number_format(2, ',', ' ') }} zł</td>
+                        <td class="text-center">{{ tt.quantity }}</td>
+                        <td class="text-center">{{ tt.availableQuantity }}</td>
+                        <td class="text-end text-nowrap">
+                            <a href="{{ path('app_admin_ticket_type_edit', {'event_id': event.id, 'id': tt.id}) }}" class="btn btn-sm btn-warning" title="Edytuj"><i class="bi bi-pencil"></i></a>
+                            {{ include('admin/ticket_type/_delete_form.html.twig', {'tt': tt, 'event': event}) }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-secondary">Brak zdefiniowanych typów biletów dla tego wydarzenia.</div>
+    {% endif %}
+
+    <div class="mt-4 d-flex justify-content-between align-items-center">
+        <div>
+            <a href="{{ path('app_admin_event_index') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Wróć do listy</a>
+            <a href="{{ path('app_admin_event_edit', {'id': event.id}) }}" class="btn btn-warning"><i class="bi bi-pencil"></i> Edytuj Wydarzenie</a>
+        </div>
+        <div>
+            {{ include('admin/event/_delete_form.html.twig') }}
+        </div>
+    </div>
+
+{% endblock %}

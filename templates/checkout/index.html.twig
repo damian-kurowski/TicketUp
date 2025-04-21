@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Kasa - Dane Zamówienia - TicketUp{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">Kasa - Twoje Dane i Podsumowanie</h1>
+
+    <div class="row g-5">
+        <div class="col-md-7 col-lg-6 order-md-last">
+            <h4 class="mb-3">Dane Zamawiającego</h4>
+            {{ form_start(orderForm) }}
+            <div class="row g-3">
+                <div class="col-12">
+                    {{ form_row(orderForm.customerEmail) }}
+                </div>
+                <div class="col-sm-6">
+                    {{ form_row(orderForm.customerFirstName) }}
+                </div>
+                <div class="col-sm-6">
+                    {{ form_row(orderForm.customerLastName) }}
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <button class="w-100 btn btn-primary btn-lg" type="submit">
+                Złóż zamówienie i przejdź dalej <i class="bi bi-arrow-right"></i>
+            </button>
+            {{ form_end(orderForm) }}
+        </div>
+
+        <div class="col-md-5 col-lg-6">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                <span class="text-primary">Twoje Zamówienie</span>
+                <span class="badge bg-primary rounded-pill">{{ cartItemCount }}</span>
+            </h4>
+            {% if cartItems is not empty %}
+                <ul class="list-group mb-3">
+                    {% for item in cartItems %}
+                        {% set tt = item.ticketType %}
+                        {% set event = tt.event %}
+                        <li class="list-group-item d-flex justify-content-between lh-sm">
+                            <div>
+                                <h6 class="my-0">{{ event.name }} - {{ tt.name }}</h6>
+                                <small class="text-muted">Ilość: {{ item.quantity }} x {{ tt.price|number_format(2, ',', ' ') }} zł</small>
+                            </div>
+                            <span class="text-muted text-nowrap">{{ item.subtotal|number_format(2, ',', ' ') }} zł</span>
+                        </li>
+                    {% endfor %}
+                    <li class="list-group-item d-flex justify-content-between bg-light">
+                        <span class="fw-bold">Suma Całkowita (PLN)</span>
+                        <strong class="text-nowrap">{{ total|number_format(2, ',', ' ') }} zł</strong>
+                    </li>
+                </ul>
+                <div class="text-center">
+                    <a href="{{ path('app_cart_show') }}" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-pencil"></i> Edytuj koszyk
+                    </a>
+                </div>
+            {% else %}
+                <p>Koszyk jest pusty.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

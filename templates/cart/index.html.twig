@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Twój Koszyk - TicketUp{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">Twój Koszyk</h1>
+
+    {% if cartItems is not empty %}
+        <div class="table-responsive">
+            <table class="table align-middle table-hover">
+                <thead class="table-light">
+                <tr>
+                    <th>Wydarzenie</th>
+                    <th>Rodzaj biletu</th>
+                    <th class="text-end">Cena/szt.</th>
+                    <th class="text-center">Ilość</th>
+                    <th class="text-end">Suma częściowa</th>
+                    <th class="text-center">Akcje</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in cartItems %}
+                    {{ include('partials/_cart_item_row.html.twig', {'item': item}) }}
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                <turbo-frame id="cart-total">
+                    {{ include('partials/_cart_total.html.twig', {'total': total}) }}
+                </turbo-frame>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{{ path('app_event_index') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Kontynuuj zakupy</a>
+            <a href="{{ path('app_checkout_index') }}" class="btn btn-lg btn-primary">Przejdź do kasy <i class="bi bi-arrow-right"></i></a>
+        </div>
+
+    {% else %}
+        <div class="alert alert-info text-center mt-4" role="alert">
+            <h4 class="alert-heading">Twój koszyk jest pusty!</h4>
+            <p>Nie dodałeś jeszcze żadnych biletów do koszyka.</p>
+            <hr>
+            <p class="mb-0">
+                <a href="{{ path('app_event_index') }}" class="btn btn-primary"><i class="bi bi-calendar-event"></i> Zobacz dostępne wydarzenia!</a>
+            </p>
+        </div>
+    {% endif %}
+
+{% endblock %}

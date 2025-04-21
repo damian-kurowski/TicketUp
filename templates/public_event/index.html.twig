@@ -1,0 +1,148 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Znajdź Bilety na Niezapomniane Wydarzenia - TicketUp{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80'); /* Przykład tła koncertu/festiwalu - Zmień URL! */
+            background-size: cover;
+            background-position: center center;
+            color: white;
+            padding: 6rem 1rem;
+            margin-bottom: 3rem;
+        }
+        .hero-section h1 { font-size: 3.5rem; font-weight: 700; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); }
+        .hero-section .lead { font-size: 1.3rem; margin-bottom: 2.5rem; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); }
+        .hero-section .input-group .btn { padding: 0.75rem 1.5rem; }
+
+        #featuredCarousel .carousel-item img { height: 450px; object-fit: cover; object-position: center; }
+        .carousel-caption { background: linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.8)); padding-bottom: 1.5rem; bottom: 0; left: 0; right: 0; }
+
+        .features-section .feature-icon { width: 4rem; height: 4rem; font-size: 2rem; }
+        .event-countdown { font-size: 0.8rem; display: block; margin-top: 5px; }
+        .card-img-top { height: 200px; object-fit: cover; }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+    <div class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-4">Odkryj Wydarzenia, Przeżyj Emocje</h1>
+            <p class="lead">Znajdź i kup bilety na koncerty, spektakle, wydarzenia sportowe i wiele więcej.</p>
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    {{ form_start(searchForm, {'attr': {'class': 'd-flex input-group input-group-lg'}}) }}
+                    {{ form_widget(searchForm.query, {'attr': {'class': 'form-control', 'placeholder': 'Wpisz nazwę wydarzenia...'}}) }}
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Szukaj
+                    </button>
+                    {{ form_end(searchForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {% if featuredEvents is not empty %}
+        <div class="mb-5">
+            <h2 class="mb-4 text-center fw-bold">Polecane Wydarzenia</h2>
+            <div id="featuredCarousel" class="carousel slide shadow-lg" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    {% for event in featuredEvents %}
+                        <button type="button" data-bs-target="#featuredCarousel" data-bs-slide-to="{{ loop.index0 }}" class="{{ loop.first ? 'active' : '' }}" aria-current="{{ loop.first ? 'true' : 'false' }}" aria-label="Slide {{ loop.index }}"></button>
+                    {% endfor %}
+                </div>
+                <div class="carousel-inner rounded">
+                    {% for event in featuredEvents %}
+                        <div class="carousel-item {{ loop.first ? 'active' : '' }}">
+                            {% if event.imageFilename %}
+                                <img loading="lazy" src="{{ asset('uploads/events/' ~ event.imageFilename) }}" class="d-block w-100" alt="{{ event.name }}">
+                            {% else %}
+                                <img loading="lazy" src="https://via.placeholder.com/1200x450/0d6efd/ffffff?text={{ event.name|url_encode }}" class="d-block w-100" alt="{{ event.name }}">
+                            {% endif %}
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5>{{ event.name }}</h5>
+                                <p>{{ event.locationName }} | {{ event.startDate|date('d.m.Y') }}</p>
+                                <p><span class="event-countdown" data-start-date="{{ event.startDate|date('Y-m-d\\TH:i:sP') }}"></span></p>
+                                <a href="{{ path('app_event_show', {'id': event.id}) }}" class="btn btn-light btn-sm">Zobacz szczegóły</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#featuredCarousel" data-bs-slide="prev"> <span class="carousel-control-prev-icon" aria-hidden="true"></span> <span class="visually-hidden">Previous</span> </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#featuredCarousel" data-bs-slide="next"> <span class="carousel-control-next-icon" aria-hidden="true"></span> <span class="visually-hidden">Next</span> </button>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="container px-4 py-5" id="featured-3">
+        <h2 class="pb-2 border-bottom text-center">Dlaczego TicketUp?</h2>
+        <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+            <div class="feature col text-center">
+                <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3 rounded-circle">
+                    <i class="bi bi-collection"></i>
+                </div>
+                <h3 class="fs-4 text-body-emphasis">Szeroki Wybór</h3>
+                <p>Znajdź bilety na tysiące wydarzeń - od lokalnych koncertów po międzynarodowe festiwale i konferencje.</p>
+            </div>
+            <div class="feature col text-center">
+                <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3 rounded-circle">
+                    <i class="bi bi-check2-circle"></i>
+                </div>
+                <h3 class="fs-4 text-body-emphasis">Łatwa Rezerwacja</h3>
+                <p>Prosty i intuicyjny proces zakupu biletów w kilku krokach, dostępny 24/7 na każdym urządzeniu.</p>
+            </div>
+            <div class="feature col text-center">
+                <div class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3 rounded-circle">
+                    <i class="bi bi-shield-lock"></i>
+                </div>
+                <h3 class="fs-4 text-body-emphasis">Bezpieczne Płatności</h3>
+                <p>Korzystamy z zaufanych operatorów płatności, gwarantując bezpieczeństwo Twoich transakcji i danych.</p>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="mb-3 border-bottom pb-2">
+        {% if searchQuery %}
+            Wyniki wyszukiwania dla: "{{ searchQuery }}" ({{ events|length }})
+        {% else %}
+            Wszystkie Nadchodzące Wydarzenia
+        {% endif %}
+    </h2>
+
+    {% if events is not empty %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for event in events %}
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        {% if event.imageFilename %}
+                            <img loading="lazy" src="{{ asset('uploads/events/' ~ event.imageFilename) }}" class="card-img-top" alt="{{ event.name }}">
+                        {% else %}
+                            <img loading="lazy" src="https://via.placeholder.com/400x200/0d6efd/ffffff?text={{ event.name|url_encode }}" class="card-img-top" alt="{{ event.name }}">
+                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ event.name }}</h5>
+                            <p class="card-text mb-1"><small class="text-muted"><i class="bi bi-geo-alt-fill"></i> {{ event.locationName }}</small></p>
+                            <p class="card-text"><small><i class="bi bi-calendar-event"></i> {{ event.startDate|date('d.m.Y H:i') }}</small></p>
+                            <span class="event-countdown" data-start-date="{{ event.startDate|date('Y-m-d\\TH:i:sP') }}"></span>
+                            <p class="card-text flex-grow-1 mt-2">{{ event.description|slice(0, 80)|striptags }}...</p>
+                            <a href="{{ path('app_event_show', {'id': event.id}) }}" class="btn btn-primary mt-auto stretched-link">Szczegóły i bilety</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-warning mt-4" role="alert">
+            {% if searchQuery %}
+                Nie znaleziono wydarzeń pasujących do frazy "{{ searchQuery }}". Spróbuj wpisać coś innego.
+            {% else %}
+                Obecnie brak nadchodzących wydarzeń do wyświetlenia.
+            {% endif %}
+        </div>
+    {% endif %}
+
+{% endblock %}

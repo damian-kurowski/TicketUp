@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Zamówienie #{{ order.id }} - Admin Panel{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">Szczegóły Zamówienia #{{ order.id }}</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h4>Dane Zamawiającego</h4>
+            <p><strong>Email:</strong> {{ order.customerEmail }}</p>
+            <p><strong>Imię:</strong> {{ order.customerFirstName|default('---') }}</p>
+            <p><strong>Nazwisko:</strong> {{ order.customerLastName|default('---') }}</p>
+            {% if order.user %}
+                <p><strong>Powiązany Użytkownik:</strong> <a href="#">{{ order.user.email }} (ID: {{ order.user.id }})</a></p>
+            {% else %}
+                <p><strong>Powiązany Użytkownik:</strong> Brak (zakup jako gość)</p>
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <h4>Status i Kwota</h4>
+            {% set status_badge = 'secondary' %}
+            {% if order.status == 'paid' %}{% set status_badge = 'success' %}{% endif %}
+            {% if order.status == 'new' %}{% set status_badge = 'warning text-dark' %}{% endif %}
+            {% if order.status == 'cancelled' %}{% set status_badge = 'danger' %}{% endif %}
+            <p><strong>Status:</strong> <span class="badge fs-6 bg-{{ status_badge }}">{{ order.status|capitalize }}</span></p>
+            <p><strong>Suma całkowita:</strong> <span class="fw-bold fs-5">{{ order.totalAmount|number_format(2, ',', ' ') }} zł</span></p>
+            <p><strong>Data złożenia:</strong> {{ order.createdAt ? order.createdAt|date('Y-m-d H:i:s') : '' }}</p>
+        </div>
+    </div>
+
+    <hr>
+
+    <h4 class="mb-3">Pozycje Zamówienia</h4>
+    {% if order.orderItems is not empty %}
+        <table class="table table-sm table-bordered">
+            <thead>
+            <tr>
+                <th>ID Pozycji</th>
+                <th>Wydarzenie</th>
+                <th>Typ Biletu</th>
+                <th class="text-end">Cena Jednostkowa</th>
+                <th class="text-center">Ilość</th>
+                <th class="text-end">Suma Częściowa</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in order.orderItems %}
+                {% set tt = item.ticketType %}
+                {% set event = tt.event %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ event.name }} (ID: {{ event.id }})</td>
+                    <td>{{ tt.name }} (ID: {{ tt.id }})</td>
+                    <td class="text-end text-nowrap">{{ item.unitPrice|number_format(2, ',', ' ') }} zł</td>
+                    <td class="text-center">{{ item.quantity }}</td>
+                    <td class="text-end text-nowrap">{{ item.totalPrice|number_format(2, ',', ' ') }} zł</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>To zamówienie nie ma żadnych pozycji.</p>
+    {% endif %}
+
+
+    <div class="mt-4">
+        <a href="{{ path('app_admin_order_index') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Wróć do listy zamówień</a>
+</div>
+
+{% endblock %}

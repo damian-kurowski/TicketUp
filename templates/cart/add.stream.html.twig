@@ -1,0 +1,10 @@
+<turbo-stream target="navbar-cart-count" action="update">
+    <template>
+        <span class="badge rounded-pill bg-light text-primary">{{ cartItemCount }}</span>
+    </template>
+</turbo-stream>
+<turbo-stream target="flash-messages" action="replace">
+    <template>
+        {{ include('partials/_flash_messages.html.twig') }}
+    </template>
+</turbo-stream>

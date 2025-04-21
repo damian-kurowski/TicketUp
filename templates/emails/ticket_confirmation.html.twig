@@ -1,0 +1,23 @@
+
+<h3>Witaj {{ order.customerFirstName | default('Kliencie') }},</h3>
+
+<p>dziękujemy za złożenie zamówienia w serwisie TicketUp!</p>
+
+<p>Twoje zamówienie o numerze <strong>#{{ order.id }}</strong> zostało opłacone i przetworzone.</p>
+
+<p>W załączniku do tej wiadomości znajdziesz swoje bilety w formacie PDF. Przygotuj je do okazania (w formie elektronicznej lub drukowanej) przy wejściu na wydarzenie.</p>
+
+<h4>Podsumowanie zamówienia:</h4>
+<ul>
+    {% for item in order.orderItems %}
+        <li>{{ item.ticketType.event.name }} - {{ item.ticketType.name }} (Ilość: {{ item.quantity }})</li>
+    {% endfor %}
+</ul>
+<p><strong>Suma całkowita: {{ order.totalAmount|number_format(2, ',', ' ') }} zł</strong></p>
+
+<p>Do zobaczenia na wydarzeniu!</p>
+
+<p>Pozdrawiamy,<br>Zespół TicketUp</p>
+
+<hr>
+<small>Otrzymujesz tę wiadomość, ponieważ dokonano zakupu na adres {{ order.customerEmail }} w serwisie TicketUp.</small>

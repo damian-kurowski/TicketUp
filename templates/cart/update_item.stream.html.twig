@@ -1,0 +1,25 @@
+{% if item %}
+    <turbo-stream action="replace" target="cart-item-{{ item.ticketType.id }}">
+        <template>
+            {{ include('partials/_cart_item_row.html.twig', {'item': item}) }}
+        </template>
+    </turbo-stream>
+{% endif %}
+
+<turbo-stream action="update" target="cart-total">
+    <template>
+        {{ include('partials/_cart_total.html.twig', {'total': total}) }}
+    </template>
+</turbo-stream>
+
+<turbo-stream action="update" target="navbar-cart-count">
+    <template>
+        <span class="badge rounded-pill bg-light text-primary">{{ cartItemCount }}</span>
+    </template>
+</turbo-stream>
+
+<turbo-stream target="flash-messages" action="replace">
+    <template>
+        {{ include('partials/_flash_messages.html.twig') }}
+    </template>
+</turbo-stream>

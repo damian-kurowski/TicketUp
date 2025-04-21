@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Bilety - Zamówienie #{{ order.id }}</title>
+    <style>
+        body { font-family: DejaVu Sans, sans-serif; font-size: 10pt; margin: 0; padding: 0; }
+        .page-break { page-break-after: always; }
+        .ticket { border: 1px dashed #999; padding: 20px; margin: 20px; background-color: #f9f9f9; }
+        .ticket:last-child { margin-bottom: 0; }
+        h1 { font-size: 16pt; color: #0d6efd; margin: 0 0 15px 0; text-align: center; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        h2 { font-size: 14pt; margin: 15px 0 10px 0; color: #333; }
+        p { margin: 5px 0; line-height: 1.4; }
+        strong { color: #0d6efd; }
+        .ticket-code {
+            font-family: monospace;
+            font-size: 9pt;
+            background-color: #eee;
+            padding: 2px 5px;
+            border: 1px solid #ccc;
+            display: inline-block;
+            margin-top: 5px;
+        }
+        .details { margin-top: 10px; }
+        .footer { font-size: 8pt; color: #777; margin-top: 20px; text-align: center; border-top: 1px dashed #ccc; padding-top: 10px;}
+    </style>
+</head>
+<body>
+{% for ticket in ticketsData %}
+    <div class="ticket">
+        <h1>TicketUp - Twój Bilet</h1>
+
+        <div class="event-details">
+            <h2>{{ ticket.event_name }}</h2>
+            <p><strong>Typ biletu:</strong> {{ ticket.ticket_type_name }}</p>
+            <p><strong>Data wydarzenia:</strong> {{ ticket.event_date|date('d.m.Y H:i') }}</p>
+            <p><strong>Miejsce:</strong> {{ ticket.location }}</p>
+            <p><strong>Cena biletu:</strong> {{ ticket.price|number_format(2, ',', ' ') }} zł</p>
+            <hr style="border: 0; border-top: 1px dashed #ccc; margin: 10px 0;">
+            <p><strong>Zamówienie:</strong> #{{ order.id }} | <strong>Dla:</strong> {{ order.customerFirstName }} {{ order.customerLastName }}</p>
+            <p><strong>Status biletu:</strong> Ważny (valid)</p>
+            <p><strong>Kod biletu:</strong> <span class="ticket-code">{{ ticket.code }}</span></p>
+        </div>
+
+        <div class="footer">
+            Prosimy zachować ten bilet i okazać go przy wejściu. Kod biletu jest unikalny. Do zobaczenia!
+        </div>
+    </div>
+
+    {% if not loop.last %}
+        <div class="page-break"></div>
+    {% endif %}
+{% endfor %}
+</body>
+</html>
