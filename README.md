@@ -66,7 +66,7 @@ TicketUp to aplikacja webowa napisana w frameworku Symfony, służąca jako syst
 
 1.  **Sklonuj repozytorium:**
     ```bash
-    git clone <URL_TWOJEGO_REPOZYTORIUM> ticketup
+    git clone git@github.com:damian-kurowski/TicketUp.git
     cd ticketup
     ```
 2.  **Zainstaluj zależności PHP:**
